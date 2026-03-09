@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Studià | Università di Corsica Pasquale Paoli</title>
+    <link rel="icon" type="image/png" href="logo.png">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+        }
+
+        .warning-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header-section {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: pulse 3s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .warning-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+            animation: shake 0.8s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-10deg); }
+            75% { transform: rotate(10deg); }
+        }
+
+        .header-section h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+            font-weight: 700;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header-section p {
+            font-size: 18px;
+            opacity: 0.95;
+            position: relative;
+            z-index: 1;
+        }
+
+        .content-section {
+            padding: 40px 30px;
+        }
+
+        .alert-box {
+            background: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+
+        .alert-box h2 {
+            color: #856404;
+            font-size: 22px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .alert-box p {
+            color: #856404;
+            line-height: 1.7;
+            font-size: 16px;
+        }
+
+        .info-box {
+            background: #e7f3ff;
+            border-left: 5px solid #2196F3;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+
+        .info-box h3 {
+            color: #1976D2;
+            font-size: 20px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .info-box p {
+            color: #1565C0;
+            line-height: 1.7;
+            font-size: 15px;
+        }
+
+        .tips-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+
+        .tips-section h3 {
+            color: #333;
+            font-size: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .tip-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 15px;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            transition: transform 0.2s;
+        }
+
+        .tip-item:hover {
+            transform: translateX(5px);
+        }
+
+        .tip-icon {
+            color: #4CAF50;
+            font-size: 24px;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+
+        .tip-content {
+            flex-grow: 1;
+        }
+
+        .tip-content strong {
+            color: #333;
+            display: block;
+            margin-bottom: 5px;
+            font-size: 16px;
+        }
+
+        .tip-content p {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        .stats-section {
+            background: #fff;
+            border: 2px solid #e0e0e0;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+
+        .stats-section h3 {
+            color: #333;
+            font-size: 18px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .stat-item:last-child {
+            border-bottom: none;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 15px;
+        }
+
+        .stat-value {
+            color: #ff5722;
+            font-weight: 600;
+            font-size: 15px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            flex: 1;
+            min-width: 200px;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #333;
+            border: 2px solid #e0e0e0;
+        }
+
+        .btn-secondary:hover {
+            background: #e9ecef;
+        }
+
+        .footer-note {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-size: 14px;
+            border-top: 1px solid #e0e0e0;
+            margin-top: 20px;
+        }
+
+        .footer-note strong {
+            color: #333;
+        }
+
+        @media (max-width: 768px) {
+            .header-section h1 {
+                font-size: 24px;
+            }
+
+            .warning-icon {
+                font-size: 60px;
+            }
+
+            .btn {
+                min-width: 100%;
+            }
+
+            .content-section {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="warning-card">
+            <div class="header-section">
+                <div class="warning-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <h1> ATTENTION : TENTATIVE DE PHISHING DÉTECTÉE !</h1>
+                <p>Vous venez d'être victime d'une simulation d'attaque</p>
+            </div>
+
+            <div class="content-section">
+                <div class="alert-box">
+                    <h2>
+                        <i class="fas fa-info-circle"></i>
+                        Ceci était un test de sensibilisation
+                    </h2>
+                    <p>
+                        <strong>Rassurez-vous !</strong> Cette page de connexion était une simulation réalisée par des étudiants de l'Université de Corse dans le cadre d'un module de cybersécurité. 
+                        <strong>Vos données n'ont PAS été compromises</strong> et ne seront utilisées qu'à des fins statistiques anonymes.
+                    </p>
+                </div>
+
+                <div class="info-box">
+                    <h3>
+                        <i class="fas fa-graduation-cap"></i>
+                        Objectif pédagogique
+                    </h3>
+                    <p>
+                        Ce test vise à démontrer à quel point une page de phishing peut ressembler à un site légitime. 
+                        L'objectif est de vous sensibiliser aux dangers du phishing et de vous apprendre à identifier les signes suspects avant qu'une véritable attaque ne se produise.
+                    </p>
+                </div>
+
+                <div class="tips-section">
+                    <h3>
+                        <i class="fas fa-shield-alt"></i>
+                        Comment se protéger du phishing ?
+                    </h3>
+
+                    <div class="tip-item">
+                        <div class="tip-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="tip-content">
+                            <strong>1. Vérifiez toujours l'URL</strong>
+                            <p>Regardez attentivement l'adresse du site dans la barre d'URL. Les sites de phishing utilisent souvent des domaines similaires mais légèrement différents (ex: univ-corslca.fr au lieu de univ-corse.fr).</p>
+                        </div>
+                    </div>
+
+                    <div class="tip-item">
+                        <div class="tip-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="tip-content">
+                            <strong>2. Méfiez-vous des messages urgents</strong>
+                            <p>Les cybercriminels créent souvent un sentiment d'urgence pour vous pousser à agir sans réfléchir ("Votre compte sera désactivé dans 24h", "Action immédiate requise").</p>
+                        </div>
+                    </div>
+
+                    <div class="tip-item">
+                        <div class="tip-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="tip-content">
+                            <strong>3. Ne donnez JAMAIS votre mot de passe par email</strong>
+                            <p>Aucune institution légitime ne vous demandera jamais votre mot de passe par email, SMS ou téléphone. Si vous recevez une telle demande, c'est forcément une arnaque.</p>
+                        </div>
+                    </div>
+
+                    <div class="tip-item">
+                        <div class="tip-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="tip-content">
+                            <strong>4. Vérifiez l'expéditeur</strong>
+                            <p>Examinez attentivement l'adresse email de l'expéditeur. Les attaquants utilisent souvent des adresses qui ressemblent aux vraies mais avec de petites différences.</p>
+                        </div>
+                    </div>
+
+                    <div class="tip-item">
+                        <div class="tip-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="tip-content">
+                            <strong>5. Activez l'authentification à deux facteurs (2FA)</strong>
+                            <p>Même si un attaquant obtient votre mot de passe, l'authentification à deux facteurs empêchera l'accès non autorisé à votre compte.</p>
+                        </div>
+                    </div>
+
+                    <div class="tip-item">
+                        <div class="tip-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="tip-content">
+                            <strong>6. En cas de doute, contactez directement le service</strong>
+                            <p>Si vous recevez un message suspect, contactez directement le service informatique de l'université par les canaux officiels plutôt que de cliquer sur les liens du message.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stats-section">
+                    <h3>
+                        <i class="fas fa-chart-bar"></i>
+                        Le saviez-vous ?
+                    </h3>
+                    <div class="stat-item">
+                        <span class="stat-label">Violations de données impliquant l'humain</span>
+                        <span class="stat-value">68%</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Attaques de phishing en 2024</span>
+                        <span class="stat-value">+150%</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Coût moyen d'une violation de données</span>
+                        <span class="stat-value">4,45M €</span>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <a href="https://www.cybermalveillance.gouv.fr/" target="_blank" class="btn btn-primary">
+                        <i class="fas fa-external-link-alt"></i> En savoir plus sur la cybersécurité
+                    </a>
+                </div>
+
+                <div class="footer-note">
+                    <strong>Projet réalisé par :</strong> Étudiants en Cybersécurité - Université de Corse<br>
+                    <strong>Contact :</strong> Pour toute question concernant ce test, contactez le service informatique de l'université.<br>
+                    <em>Vos données sont traitées conformément au RGPD et seront supprimées automatiquement après 30 jours.</em>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Animation d'entrée
+        document.addEventListener('DOMContentLoaded', function() {
+            // Effet sonore optionnel (décommenter si souhaité)
+            // const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSuBzvLZiTYIGGe77OmhTgwOUKXh8bllHgU2jdXxzn0vBSR1xu/gkUALFF241+yrWRUJPZnb8sFzJwYsi9Hy2Ik2CBhnu+zqoU4LDlCl4fG5ZR4FNo3V8c59LwUkdcbv4JFACxReOUe+');
+            // audio.play().catch(e => console.log('Audio play failed:', e));
+        });
+    </script>
+</body>
+
+</html>

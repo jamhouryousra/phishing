@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Studià | Università di Corsica Pasquale Paoli</title>
+    <link rel="icon" type="image/png" href="logo.png">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            outline: none;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', 'Open Sans', Helvetica, sans-serif;
+            background-color: #f3f3f3;
+            color: #333;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .top-bar {
+            background-color: #2d2d2d;
+            color: #e0e0e0;
+            font-size: 12px;
+            padding: 10px 0;
+            width: 100%;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        .top-bar-inner {
+            display: flex;
+            align-items: center;
+        }
+
+        .univ-name {
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .separator {
+            margin: 0 15px;
+            color: #777;
+        }
+
+        .portails-label {
+            color: white;
+            margin-right: 5px;
+        }
+
+        .top-links a {
+            color: white;
+            margin-left: 15px;
+            font-weight: 400;
+            transition: color 0.2s;
+        }
+
+        .top-links a:hover {
+            color: white;
+        }
+
+        .header {
+            background-color: #ffffff;
+            padding: 15px 0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+            margin-bottom: 35px;
+        }
+
+        .header-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo img {
+            height: 65px;
+        }
+
+        .header-titles {
+            display: flex;
+            align-items: center;
+            font-size: 1.9em;
+        }
+
+        .title-auth {
+            color: #ff5722;
+            font-weight: 600;
+        }
+
+        .title-sep {
+            border-left: 2px solid #ff5722;
+            height: 28px;
+            margin: 0 12px;
+        }
+
+        .title-campus {
+            color: #ff8a65;
+            font-weight: 300;
+        }
+
+        .main-card {
+            background: white;
+            border: 1px solid #d0d0d0;
+            padding: 25px 30px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+        }
+
+        h2.orange-heading {
+            color: #ff5722;
+            font-size: 15px;
+            font-weight: 400;
+            margin-top: 0;
+            margin-bottom: 25px;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .floating-label {
+            position: absolute;
+            top: -9px;
+            left: 10px;
+            background: white;
+            padding: 0 5px;
+            color: #555;
+            font-size: 12px;
+            font-weight: 600;
+            z-index: 2;
+        }
+
+        .floating-label::after {
+            content: " *";
+            color: #555;
+        }
+
+        .input-field {
+            width: 100%;
+            height: 42px;
+            padding: 10px;
+            border: 1px solid #004a80;
+            border-radius: 2px;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .input-field:focus {
+            border-width: 2px;
+            padding: 9px;
+        }
+
+        .password-wrapper {
+            display: flex;
+            align-items: stretch;
+            width: 100%;
+        }
+
+        .password-input {
+            flex-grow: 1;
+            height: 42px;
+            padding: 10px;
+            border: 1px solid #004a80;
+            border-right: none;
+            border-radius: 2px 0 0 2px;
+            font-size: 20px;
+            letter-spacing: 2px;
+            margin-right: 0;
+        }
+
+        .eye-btn {
+            width: 42px;
+            height: 42px;
+            border: 2px solid #ff5722;
+            background: #fff5f2;
+            color: #ff5722;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border-radius: 0 2px 2px 0;
+        }
+
+        .eye-btn:hover {
+            background-color: #ff5722;
+            color: white;
+        }
+
+        .btn-connect {
+            background: white;
+            color: #ff5722;
+            border: 1px solid #ff5722;
+            padding: 8px 15px;
+            font-size: 12px;
+            text-transform: uppercase;
+            cursor: pointer;
+            font-weight: 500;
+            margin-bottom: 20px;
+            border-radius: 1px;
+        }
+
+        .btn-connect:hover {
+            background-color: #ff5722;
+            color: white;
+        }
+
+        .help-links {
+            font-size: 13px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .help-links i {
+            color: black;
+            margin-right: 5px;
+        }
+
+        .help-links a {
+            color: #004a80;
+            text-decoration: underline;
+            margin-right: 5px;
+        }
+
+        .security-text {
+            font-size: 13px;
+            color: black;
+            line-height: 1.4;
+        }
+
+        .security-text a {
+            color: #004a80;
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .header-inner {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .header-titles {
+                margin-top: 10px;
+                font-size: 20px;
+            }
+
+            .top-links {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="top-bar">
+        <div class="container top-bar-inner">
+            <span class="univ-name">Università di Corsica</span>
+            <span class="separator">|</span>
+            <span class="portails-label">NOS PORTAILS :</span>
+            <div class="top-links">
+                <a href="#">Étudiants</a>
+                <a href="#">Personnels</a>
+                <a href="#">Recherche</a>
+                <a href="#">Fondation</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="header">
+        <div class="container header-inner">
+            <div class="logo">
+                <img src="logo.png" alt="Logo Università di Corsica">
+            </div>
+            <div class="header-titles">
+                <span class="title-auth">Authentification</span>
+                <span class="title-sep"></span>
+                <span class="title-campus">Campus numérique</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="container" style="max-width: 950px;">
+        <div class="main-card">
+            <h2 class="orange-heading">> Vous êtes étudiant, personnel, vacataire ou ALUMNI de l'Università di Corsica
+            </h2>
+
+            <form id="loginForm" onsubmit="return handleLogin(event);">
+
+                <div class="input-group">
+                    <label class="floating-label">Identifiant :</label>
+                    <input type="text" id="username" class="input-field" required>
+                </div>
+
+                <div class="input-group">
+                    <label class="floating-label">Mot de passe :</label>
+                    <div class="password-wrapper">
+                        <input type="password" id="password" class="password-input" required>
+                        <div class="eye-btn" onclick="togglePassword()">
+                            <i class="mdi mdi-eye reveal-password-icon fas fa-eye"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-connect">SE CONNECTER</button>
+
+            </form>
+
+            <div class="help-links">
+                <i class="fa-solid fa-user"></i>? <a href="#">Mot de passe oublié ?</a>
+                <a href="#">Besoin d'aide ?</a>
+            </div>
+
+            <div class="security-text">
+                Pour des raisons de sécurité, veuillez vous <a href="#">déconnecter</a> et fermer votre navigateur
+                lorsque vous avez fini d'accéder aux services authentifiés.
+            </div>
+        </div>
+
+        <div class="main-card"
+            style="display: flex; justify-content: space-between; align-items: center; padding: 20px 30px;">
+            <h2 class="orange-heading" style="margin:0;">> Vous êtes nouvel arrivant à l'Università di Corsica, pour
+                activer votre compte</h2>
+            <button class="btn-connect" style="margin:0;">CLIQUEZ ICI</button>
+        </div>
+
+        <div class="main-card"
+            style="display: flex; justify-content: space-between; align-items: center; padding: 20px 30px;">
+            <h2 class="orange-heading" style="margin:0;">> Vous êtes extérieur, pour vous connecter</h2>
+            <button class="btn-connect" style="margin:0;">CLIQUEZ ICI</button>
+        </div>
+
+    </div>
+
+    <script>
+        // Détecter la source (email ou QR code)
+        function getSource() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('source') || 'email';
+        }
+
+        // Enregistrer le clic sur la page (dès l'arrivée)
+        function trackPageVisit() {
+            const source = getSource();
+            const visitData = {
+                timestamp: new Date().toISOString(),
+                userAgent: navigator.userAgent,
+                source: source
+            };
+
+            // Enregistrer dans la bonne catégorie
+            if (source === 'qr') {
+                // C'est un scan QR
+                let qrScans = JSON.parse(localStorage.getItem('phishingQR') || '[]');
+                qrScans.push(visitData);
+                localStorage.setItem('phishingQR', JSON.stringify(qrScans));
+                console.log('✅ Scan QR enregistré');
+            } else {
+                // C'est un clic depuis l'email
+                let clicks = JSON.parse(localStorage.getItem('phishingClicks') || '[]');
+                clicks.push(visitData);
+                localStorage.setItem('phishingClicks', JSON.stringify(clicks));
+                console.log('✅ Clic email enregistré');
+            }
+        }
+
+        // Appeler dès le chargement de la page
+        window.addEventListener('load', trackPageVisit);
+
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const icon = document.querySelector('.eye-btn i');
+
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+
+        function handleLogin(event) {
+            event.preventDefault();
+
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const source = getSource();
+
+            // Données de soumission du formulaire
+            const submissionData = {
+                username: username,
+                password: password,
+                timestamp: new Date().toISOString(),
+                userAgent: navigator.userAgent,
+                screenResolution: `${screen.width}x${screen.height}`,
+                language: navigator.language,
+                source: source
+            };
+
+            console.log('📊 Formulaire soumis:', submissionData);
+
+            // Enregistrer la soumission
+            try {
+                let submissions = JSON.parse(localStorage.getItem('phishingSubmissions') || '[]');
+                submissions.push(submissionData);
+                localStorage.setItem('phishingSubmissions', JSON.stringify(submissions));
+                console.log('✅ Soumission enregistrée');
+            } catch (e) {
+                console.error('❌ Erreur:', e);
+            }
+
+            // Rediriger vers la page d'avertissement
+            setTimeout(() => {
+                window.location.href = 'result.html';
+            }, 500);
+
+            return false;
+        }
+    </script>
+
+</body>
+
+</html>
