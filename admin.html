@@ -426,122 +426,67 @@
     </div>
 
     <script>
+        // ============================================================
+        // REMPLACE CETTE URL PAR L'URL DE TON GOOGLE APPS SCRIPT
+        // ============================================================
+        const WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbx2rh1liWVuaSJ_BoQfx8xSL8kiPM-ISaAqK9_1FCbFGw09gOqrrYWHOwvb5g0cFoVf/exec';
+
+        let cachedData = [];
+
         function loadData() {
-            const clicks = JSON.parse(localStorage.getItem('phishingClicks') || '[]');
-            const submissions = JSON.parse(localStorage.getItem('phishingSubmissions') || '[]');
-            const qrScans = JSON.parse(localStorage.getItem('phishingQR') || '[]');
+            fetch(WEBHOOK_URL)
+                .then(function(r) { return r.json(); })
+                .then(function(result) {
+                    if (result.status !== 'ok') return;
 
-            // Nombre total de clics (email)
-            document.getElementById('totalClicks').textContent = clicks.length;
+                    cachedData = result.data || [];
+                    const stats = result.stats;
 
-            // Nombre de formulaires remplis
-            document.getElementById('totalSubmissions').textContent = submissions.length;
+                    document.getElementById('totalClicks').textContent = stats.emailClicks;
+                    document.getElementById('totalSubmissions').textContent = stats.formSubmissions;
+                    document.getElementById('totalQR').textContent = stats.qrScans;
 
-            // Nombre de scans QR
-            document.getElementById('totalQR').textContent = qrScans.length;
-
-            // Personnes qui ont cliqué mais pas rempli le formulaire
-            const clickedOnly = clicks.length - submissions.length;
-            document.getElementById('clickedOnly').textContent = clickedOnly > 0 ? clickedOnly : 0;
-
-            // Total personnes piégées (clics + QR scans)
-            const totalPiged = clicks.length + qrScans.length;
-            document.getElementById('totalPiged').textContent = totalPiged;
-        }
-
-        function exportToJSON() {
-            const data = {
-                clicks: JSON.parse(localStorage.getItem('phishingClicks') || '[]'),
-                submissions: JSON.parse(localStorage.getItem('phishingSubmissions') || '[]'),
-                qrScans: JSON.parse(localStorage.getItem('phishingQR') || '[]')
-            };
-
-            if (data.clicks.length === 0 && data.submissions.length === 0 && data.qrScans.length === 0) {
-                alert(' Aucune donnée à exporter');
-                return;
-            }
-
-            const dataStr = JSON.stringify(data, null, 2);
-            const dataBlob = new Blob([dataStr], { type: 'application/json' });
-            
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(dataBlob);
-            link.download = `phishing-data-${new Date().toISOString().split('T')[0]}.json`;
-            link.click();
-            
-            alert(` Données exportées en JSON !\n\n• Clics: ${data.clicks.length}\n• Soumissions: ${data.submissions.length}\n• QR Scans: ${data.qrScans.length}`);
+                    var clickedOnly = stats.emailClicks - stats.formSubmissions;
+                    document.getElementById('clickedOnly').textContent = clickedOnly > 0 ? clickedOnly : 0;
+                    document.getElementById('totalPiged').textContent = stats.total;
+                })
+                .catch(function(err) {
+                    console.error('Erreur chargement:', err);
+                });
         }
 
         function exportToCSV() {
-            const submissions = JSON.parse(localStorage.getItem('phishingSubmissions') || '[]');
-            const clicks = JSON.parse(localStorage.getItem('phishingClicks') || '[]');
-            const qrScans = JSON.parse(localStorage.getItem('phishingQR') || '[]');
-
-            if (submissions.length === 0 && clicks.length === 0 && qrScans.length === 0) {
-                alert(' Aucune donnée à exporter');
+            if (cachedData.length === 0) {
+                alert('Aucune donnee a exporter');
                 return;
             }
 
-            let csv = 'Type,Date et Heure,Navigateur,Source\n';
+            var csv = 'Type,Date et Heure,Navigateur,Source\n';
 
-            clicks.forEach(log => {
-                const date = new Date(log.timestamp).toLocaleString('fr-FR');
-                const browser = log.userAgent.includes('Chrome') ? 'Chrome' :
-                               log.userAgent.includes('Firefox') ? 'Firefox' :
-                               log.userAgent.includes('Safari') ? 'Safari' : 'Autre';
-                csv += `"Clic Email","${date}","${browser}","Email"\n`;
+            cachedData.forEach(function(row) {
+                var date = new Date(row.timestamp).toLocaleString('fr-FR');
+                var ua = row.userAgent || '';
+                var browser = ua.indexOf('Chrome') !== -1 ? 'Chrome' :
+                              ua.indexOf('Firefox') !== -1 ? 'Firefox' :
+                              ua.indexOf('Safari') !== -1 ? 'Safari' : 'Autre';
+                var typeName = row.type === 'email_click' ? 'Clic Email' :
+                               row.type === 'qr_scan' ? 'Scan QR' :
+                               row.type === 'form_submission' ? 'Soumission Formulaire' : row.type;
+                csv += '"' + typeName + '","' + date + '","' + browser + '","' + (row.source || '') + '"\n';
             });
 
-            qrScans.forEach(log => {
-                const date = new Date(log.timestamp).toLocaleString('fr-FR');
-                const browser = log.userAgent.includes('Chrome') ? 'Chrome' :
-                               log.userAgent.includes('Firefox') ? 'Firefox' :
-                               log.userAgent.includes('Safari') ? 'Safari' : 'Autre';
-                csv += `"Scan QR","${date}","${browser}","QR Code"\n`;
-            });
-
-            submissions.forEach(log => {
-                const date = new Date(log.timestamp).toLocaleString('fr-FR');
-                const browser = log.userAgent.includes('Chrome') ? 'Chrome' :
-                               log.userAgent.includes('Firefox') ? 'Firefox' :
-                               log.userAgent.includes('Safari') ? 'Safari' : 'Autre';
-                const source = log.source || 'Email';
-                csv += `"Soumission Formulaire","${date}","${browser}","${source}"\n`;
-            });
-
-            const dataBlob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement('a');
+            var dataBlob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            var link = document.createElement('a');
             link.href = URL.createObjectURL(dataBlob);
-            link.download = `phishing-stats-${new Date().toISOString().split('T')[0]}.csv`;
+            link.download = 'phishing-stats-' + new Date().toISOString().split('T')[0] + '.csv';
             link.click();
 
-            alert(` Données exportées en CSV !`);
-        }
-
-        function clearAllData() {
-            const clicks = JSON.parse(localStorage.getItem('phishingClicks') || '[]');
-            const submissions = JSON.parse(localStorage.getItem('phishingSubmissions') || '[]');
-            const qrScans = JSON.parse(localStorage.getItem('phishingQR') || '[]');
-            
-            const total = clicks.length + submissions.length + qrScans.length;
-
-            if (total === 0) {
-                alert('Aucune donnée à supprimer');
-                return;
-            }
-
-            if (confirm(`⚠️ Êtes-vous sûr de vouloir effacer toutes les données ?\n\n• Clics: ${clicks.length}\n• Soumissions: ${submissions.length}\n• QR Scans: ${qrScans.length}\n\nCette action est IRRÉVERSIBLE.`)) {
-                localStorage.removeItem('phishingClicks');
-                localStorage.removeItem('phishingSubmissions');
-                localStorage.removeItem('phishingQR');
-                loadData();
-                alert(' Toutes les données ont été supprimées.');
-            }
+            alert('Donnees exportees en CSV !');
         }
 
         function loadCampaignInfo() {
-            const name = localStorage.getItem('campaignName') || '—';
-            const date = localStorage.getItem('campaignDate');
+            var name = localStorage.getItem('campaignName') || '—';
+            var date = localStorage.getItem('campaignDate');
             document.getElementById('campaign-name-display').textContent = name;
             document.getElementById('campaign-date-display').textContent = date
                 ? new Date(date).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })
@@ -549,34 +494,25 @@
         }
 
         function nouvelleCampagne() {
-            const clicks = JSON.parse(localStorage.getItem('phishingClicks') || '[]');
-            const submissions = JSON.parse(localStorage.getItem('phishingSubmissions') || '[]');
-            const qrScans = JSON.parse(localStorage.getItem('phishingQR') || '[]');
-            const total = clicks.length + submissions.length + qrScans.length;
+            var nomCampagne = prompt('Nom de la nouvelle campagne :\n(ex: Campagne Mars 2026)');
+            if (nomCampagne === null) return;
 
-            const nomCampagne = prompt(' Nom de la nouvelle campagne :\n(ex: Campagne Mars 2026)');
-            if (nomCampagne === null) return; // cancelled
-
-            if (total > 0) {
-                if (!confirm(` Les données actuelles seront exportées en CSV puis effacées.\n\n• Clics: ${clicks.length}\n• Soumissions: ${submissions.length}\n• QR Scans: ${qrScans.length}\n\nContinuer ?`)) return;
+            if (cachedData.length > 0) {
+                if (!confirm('Les donnees actuelles seront exportees en CSV.\nContinuer ?')) return;
                 exportToCSV();
             }
 
-            localStorage.removeItem('phishingClicks');
-            localStorage.removeItem('phishingSubmissions');
-            localStorage.removeItem('phishingQR');
             localStorage.setItem('campaignName', nomCampagne || 'Campagne sans nom');
             localStorage.setItem('campaignDate', new Date().toISOString());
-            loadData();
             loadCampaignInfo();
-            alert(` Nouvelle campagne "${nomCampagne}" lancée !\nToutes les statistiques remises à zéro.`);
+            alert('Nouvelle campagne "' + nomCampagne + '" lancee !\nNote : les anciennes donnees restent dans le Google Sheet.');
         }
 
-        // Charger les données au démarrage
-        document.addEventListener('DOMContentLoaded', () => { loadData(); loadCampaignInfo(); });
+        // Charger les donnees au demarrage
+        document.addEventListener('DOMContentLoaded', function() { loadData(); loadCampaignInfo(); });
 
-        // Actualiser toutes les 5 secondes
-        setInterval(loadData, 5000);
+        // Actualiser toutes les 10 secondes
+        setInterval(loadData, 10000);
     </script>
 </body>
 </html>
