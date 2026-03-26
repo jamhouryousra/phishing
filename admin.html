@@ -437,18 +437,28 @@
             fetch(WEBHOOK_URL)
                 .then(function(r) { return r.json(); })
                 .then(function(result) {
-                    if (result.status !== 'ok') return;
+                    if (result.status !== 'success') return;
 
                     cachedData = result.data || [];
-                    const stats = result.stats;
 
-                    document.getElementById('totalClicks').textContent = stats.emailClicks;
-                    document.getElementById('totalSubmissions').textContent = stats.formSubmissions;
-                    document.getElementById('totalQR').textContent = stats.qrScans;
+                    var emailClicks = 0;
+                    var qrScans = 0;
+                    var formSubmissions = 0;
 
-                    var clickedOnly = stats.emailClicks - stats.formSubmissions;
+                    cachedData.forEach(function(row) {
+                        var type = row.Type || row.type || '';
+                        if (type === 'email_click') emailClicks++;
+                        else if (type === 'qr_scan') qrScans++;
+                        else if (type === 'form_submission') formSubmissions++;
+                    });
+
+                    document.getElementById('totalClicks').textContent = emailClicks;
+                    document.getElementById('totalSubmissions').textContent = formSubmissions;
+                    document.getElementById('totalQR').textContent = qrScans;
+
+                    var clickedOnly = emailClicks - formSubmissions;
                     document.getElementById('clickedOnly').textContent = clickedOnly > 0 ? clickedOnly : 0;
-                    document.getElementById('totalPiged').textContent = stats.total;
+                    document.getElementById('totalPiged').textContent = emailClicks + qrScans;
                 })
                 .catch(function(err) {
                     console.error('Erreur chargement:', err);
@@ -464,15 +474,18 @@
             var csv = 'Type,Date et Heure,Navigateur,Source\n';
 
             cachedData.forEach(function(row) {
-                var date = new Date(row.timestamp).toLocaleString('fr-FR');
-                var ua = row.userAgent || '';
+                var type = row.Type || row.type || '';
+                var ts = row.Timestamp || row.timestamp || '';
+                var ua = row.UserAgent || row.userAgent || '';
+                var source = row.Source || row.source || '';
+                var date = new Date(ts).toLocaleString('fr-FR');
                 var browser = ua.indexOf('Chrome') !== -1 ? 'Chrome' :
                               ua.indexOf('Firefox') !== -1 ? 'Firefox' :
                               ua.indexOf('Safari') !== -1 ? 'Safari' : 'Autre';
-                var typeName = row.type === 'email_click' ? 'Clic Email' :
-                               row.type === 'qr_scan' ? 'Scan QR' :
-                               row.type === 'form_submission' ? 'Soumission Formulaire' : row.type;
-                csv += '"' + typeName + '","' + date + '","' + browser + '","' + (row.source || '') + '"\n';
+                var typeName = type === 'email_click' ? 'Clic Email' :
+                               type === 'qr_scan' ? 'Scan QR' :
+                               type === 'form_submission' ? 'Soumission Formulaire' : type;
+                csv += '"' + typeName + '","' + date + '","' + browser + '","' + source + '"\n';
             });
 
             var dataBlob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
